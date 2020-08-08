@@ -11,7 +11,7 @@ from city_scrapers.spiders.alle_improvements import AlleImprovementsSpider
 test_response = file_response(
     join(dirname(__file__), "files", "alle_improvements.html"),
     url=(
-        "https://www.county.allegheny.pa.us/economic-development/"
+        "https://www.alleghenycounty.us/economic-development/"
         "authorities/meetings-reports/aim/meetings.aspx"
     ),
 )
@@ -70,7 +70,7 @@ def test_location():
 
 def test_source():
     expected = (
-        "https://www.county.allegheny.pa.us/economic-development/"
+        "https://www.alleghenycounty.us/economic-development/"
         "authorities/meetings-reports/aim/meetings.aspx"
     )
 
@@ -83,14 +83,14 @@ def test_links():
     assert parsed_items[1]["links"] == [
         {
             "href": (
-                "https://www.county.allegheny.pa.us/economic-development/"
+                "https://www.alleghenycounty.us/economic-development/"
                 "authorities/meetings-reports/aim/2019/02-26-19-agenda.aspx"
             ),
             "title": "Agenda 02-26-19",
         },
         {
             "href": (
-                "https://www.county.allegheny.pa.us/economic-development/"
+                "https://www.alleghenycounty.us/economic-development/"
                 "authorities/meetings-reports/aim/2019/02-26-19-minutes.aspx"
             ),
             "title": "Minutes 02-26-19",

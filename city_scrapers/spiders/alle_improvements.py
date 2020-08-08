@@ -20,10 +20,10 @@ class AlleImprovementsSpider(CityScrapersSpider):
     name = "alle_improvements"
     agency = "Allegheny County Authority for Improvements in Municipalities (AIM)"
     timezone = "America/New_York"
-    allowed_domains = ["county.allegheny.pa.us"]
+    allowed_domains = ["alleghenycounty.us"]
     start_urls = [
         (
-            "https://www.county.allegheny.pa.us/economic-development/"
+            "https://www.alleghenycounty.us/economic-development/"
             "authorities/meetings-reports/aim/meetings.aspx"
         ),
     ]
