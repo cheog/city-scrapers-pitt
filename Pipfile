@@ -12,14 +12,15 @@ scrapy-sentry = "*"
 scrapy-wayback-middleware = "*"
 city-scrapers-core = {extras = ["aws"],version = "*"}
 legistar = {git = "https://github.com/opencivicdata/python-legistar-scraper"}
-pypiwin32 = {version = "*", sys_platform = "== 'win32'"}
+pywin32 = {version = "*", sys_platform = "== 'win32'"}
+atomicwrites = "*"
 
 [dev-packages]
 freezegun = "*"
 "flake8" = "*"
 isort = "*"
 yapf = "*"
-pytest = "*"
+pytest = {version = ">=5.4.3"}
 
 [scripts]
 style = "yapf --in-place --recursive ./city_scrapers/ ./tests/"
