@@ -12,6 +12,7 @@ scrapy-sentry = "*"
 scrapy-wayback-middleware = "*"
 legistar = {git = "https://github.com/opencivicdata/python-legistar-scraper"}
 pypiwin32 = {version = "*",sys_platform = "== 'win32'"}
+pywin32 = {version = "*",sys_platform = "== 'win32'"}
 city-scrapers-core = {extras = ["aws"],version = "*"}
 
 [dev-packages]
