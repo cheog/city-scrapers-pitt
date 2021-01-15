@@ -1,26 +1,3 @@
-"""
-TODO: Make testable (separate getting shit from the HTML and processing shit)
-To split:
-    - parse: also find all the board_div and lac_div
-    - _get_dates: I think I should run this from parse
-
-Requires HTML Test:
-    - _ensure_times_are_as_expected
-    - _lis_from_ul
-
-No HTML Test:
-    - make_meetings
-    - str_to_date
-
-
-TODO: Mockup an html with key errors test
-- Try with jinja
-- Try with plain html
-- Hybrid?
-  - pieces of html that are stiched together?
-
-TODO: Check out shit bonnie put in chat
-"""
 import re
 from datetime import datetime, time, date
 from dataclasses import dataclass
@@ -80,7 +57,21 @@ class AlleLibraryAssocSpider(CityScrapersSpider):
     timezone = "America/New_York"
     allowed_domains = ["https://aclalibraries.org"]
     start_urls = ["https://aclalibraries.org/who-we-are/"]
-    date_reg = re.compile(r"(\w+,\s+\w+\s+\d+)(\s+–\s+)?(.*)?")
+
+    # The regex below is meant to split stuff like the following
+    # - Monday, January 27
+    # - Monday, January 27 - some note
+    # - Monday, January 27 some note
+    #
+    # This regex is a little complicated BUT FOR GOOD REASON
+    # - \s+ is used a lot instead of a simple space because the page has random
+    #   weird whitespace characters instead of normal spaces
+    # - This clause '(\s+[–-]\s+|\s+)' is here because notes show up either like
+    #   'Mon, Jan 27 - note here' or 'Mon, Jan 27 note here'.
+    # - You'll notice I have '[–-]'. I inside the brackets are a minus and an
+    #   endash (I think). The website was using endashes and my tests used
+    #   minuses so I figure I'd include both.
+    date_reg = re.compile(r"(\w+,\s+\w+\s+\d+)((\s+[–-]\s+|\s+)(.*))?")
 
     def parse(self, response: HtmlResponse):
         tree = fromstring(response.text)
@@ -92,6 +83,7 @@ class AlleLibraryAssocSpider(CityScrapersSpider):
         board_div = board_div[0]
 
         meeting_times = self._ensure_times_are_as_expected(board_div)
+        self._ensure_meetings_are_remote(board_div)
         dates = self._get_dates(board_div)
         board_dates, general_dates, advisory_dates, lac_dates = dates
         meetings = self._make_meeting(
@@ -115,7 +107,7 @@ class AlleLibraryAssocSpider(CityScrapersSpider):
         return meetings
 
     def _make_meeting(
-        self, dates: List[MeetingDate], meeting_time: MeetingTimes,
+        self, dates: List[MeetingDate], meeting_time: time,
         id_prefix: str, title: str, classification
     ) -> List[Meeting]:
         meetings = []
@@ -142,27 +134,30 @@ class AlleLibraryAssocSpider(CityScrapersSpider):
             meetings.append(meeting)
         return meetings
 
-    def _str_to_date(self, date_str: str) -> date:
-        """Take 'Monday, January 27' and turn it into a date."""
-        # The year it sets this too is 1900
-        tmp_date = datetime.strptime(date_str.strip(), r"%A, %B %d")
-        return date(date.today().year, tmp_date.month, tmp_date.day)
-
-    def _lis_from_ul(self, some_ul: HtmlElement) -> List[MeetingDate]:
-        dates = []
-        location = {
+    def _date_from_lis(self, lis: List[str]) -> List[MeetingDate]:
+        location =  {
             "name": "Remote",
             "address": "Remote"
         }
-        for li in some_ul.xpath("li"):
-            match = self.date_reg.match(li.text_content().strip())
+        dates = []
+        for li in lis:
+            log.info(repr(li))
+            match = self.date_reg.match(li)
             if not match:
                 log.warning("Failed to capture a meeting date.")
                 continue
-            the_date = self._str_to_date(match.group(1))
-            notes = match.group(3).strip() if match.group(3) else None
+
+            # Take 'Monday, January 27' and turn it into a date
+            date_str = match.group(1).strip()
+            tmp_date = datetime.strptime(date_str, r"%A, %B %d")
+            the_date = date(date.today().year, tmp_date.month, tmp_date.day)
+
+            notes = match.group(4).strip() if match.group(4) else None
             dates.append(MeetingDate(the_date, location, notes))
         return dates
+
+    def _lis_from_ul(self, some_ul: HtmlElement) -> List[str]:
+        return [li.text_content().strip() for li in some_ul.xpath("li")]
 
     def _get_dates(self, board_div: HtmlElement):
         """Get the lists of dates, locations, and notes from the website."""
@@ -177,10 +172,15 @@ class AlleLibraryAssocSpider(CityScrapersSpider):
             raise PageChangedException()
         lac_ul = lac_uls[0]
 
-        board_dates = self._lis_from_ul(board_ul)
-        general_dates = self._lis_from_ul(general_ul)
-        advisory_dates = self._lis_from_ul(advisory_ul)
-        lac_dates = self._lis_from_ul(lac_ul)
+        board_lis = self._lis_from_ul(board_ul)
+        general_lis = self._lis_from_ul(general_ul)
+        advisory_lis = self._lis_from_ul(advisory_ul)
+        lac_lis = self._lis_from_ul(lac_ul)
+
+        board_dates = self._date_from_lis(board_lis)
+        general_dates = self._date_from_lis(general_lis)
+        advisory_dates = self._date_from_lis(advisory_lis)
+        lac_dates = self._date_from_lis(lac_lis)
         return (board_dates, general_dates, advisory_dates, lac_dates)
 
     def _ensure_times_are_as_expected(
@@ -230,3 +230,13 @@ class AlleLibraryAssocSpider(CityScrapersSpider):
             advisory=time(10, 0),
             lac=time(10, 0),
         )
+
+    def _ensure_meetings_are_remote(self, board_div: HtmlElement):
+        remote_statement_p = board_div.xpath("./div/div/p")
+        if len(remote_statement_p) != 1:
+            raise PageChangedException()
+        remote_statement_p = remote_statement_p[0]
+
+        statement = "All meetings will be held remotely until further notice"
+        if statement not in remote_statement_p.text_content():
+            raise PageChangedException()
