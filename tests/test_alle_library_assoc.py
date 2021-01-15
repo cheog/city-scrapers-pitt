@@ -31,9 +31,7 @@ def test_smoke_screen():
     # datetimes. As such I can find based on date.
     def find_and_compare_items(item_a):
         items = list(
-            filter(
-                lambda item_b: item_b["start"] == item_a["start"], parsed_items
-            )
+            filter(lambda item_b: item_b["start"] == item_a["start"], parsed_items)
         )
         assert len(items) == 1
         item_b = items[0]
@@ -119,12 +117,8 @@ def test_smoke_screen():
 def test_make_meetings():
     the_time = time(6, 30)
     meeting_dates = [
-        MeetingDate(
-            the_date=date(2021, 1, 9), the_place={"key": "val"}, notes="notes"
-        ),
-        MeetingDate(
-            the_date=date(2021, 1, 7), the_place={"key": "val"}, notes=None
-        ),
+        MeetingDate(the_date=date(2021, 1, 9), the_place={"key": "val"}, notes="notes"),
+        MeetingDate(the_date=date(2021, 1, 7), the_place={"key": "val"}, notes=None),
         MeetingDate(
             the_date=date(2021, 1, 10),
             the_place={"key": "val"},

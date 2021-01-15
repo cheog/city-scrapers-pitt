@@ -194,9 +194,7 @@ class AlleLibraryAssocSpider(CityScrapersSpider):
         lac_dates = self._date_from_lis(lac_lis)
         return (board_dates, general_dates, advisory_dates, lac_dates)
 
-    def _ensure_times_are_as_expected(
-        self, board_div: HtmlElement
-    ) -> MeetingTimes:
+    def _ensure_times_are_as_expected(self, board_div: HtmlElement) -> MeetingTimes:
         """I expect the board and general meetings to be at a certain time."""
         # They put their meeting times in plain english inside paragraph tags
         # (p). Instead of trying to parse plain english I'm just going to
@@ -210,9 +208,7 @@ class AlleLibraryAssocSpider(CityScrapersSpider):
         # function.  I'm assuming the first p is for the board and the second p
         # is general
 
-        expected_board_p = (
-            "ACLA Board meetings (6:30 pm unless otherwise noted)"
-        )
+        expected_board_p = "ACLA Board meetings (6:30 pm unless otherwise noted)"
         expected_general_p = "General Membership meetings (7:00 pm)"
         expected_advisory_p = "(10:00 am)"
         expected_lac_p = "(10:00 am)"
