@@ -87,28 +87,42 @@ class AlleLibraryAssocSpider(CityScrapersSpider):
         dates = self._get_dates(board_div)
         board_dates, general_dates, advisory_dates, lac_dates = dates
         meetings = self._make_meeting(
-            board_dates, meeting_times.board, "alle_library_assoc_board_",
-            "Board Meeting", BOARD
+            board_dates,
+            meeting_times.board,
+            "alle_library_assoc_board_",
+            "Board Meeting",
+            BOARD,
         )
         meetings += self._make_meeting(
-            general_dates, meeting_times.general, "alle_library_assoc_general_",
-            "General Meeting", FORUM
+            general_dates,
+            meeting_times.general,
+            "alle_library_assoc_general_",
+            "General Meeting",
+            FORUM,
         )
         meetings += self._make_meeting(
-            advisory_dates, meeting_times.advisory,
-            "alle_library_assoc_advisory_", "Advisory Council Meeting",
-            ADVISORY_COMMITTEE
+            advisory_dates,
+            meeting_times.advisory,
+            "alle_library_assoc_advisory_",
+            "Advisory Council Meeting",
+            ADVISORY_COMMITTEE,
         )
         meetings += self._make_meeting(
-            lac_dates, meeting_times.lac,
-            "alle_library_assoc_lac_", "Lac Executive Comitee Meeting",
-            COMMITTEE
+            lac_dates,
+            meeting_times.lac,
+            "alle_library_assoc_lac_",
+            "Lac Executive Comitee Meeting",
+            COMMITTEE,
         )
         return meetings
 
     def _make_meeting(
-        self, dates: List[MeetingDate], meeting_time: time,
-        id_prefix: str, title: str, classification
+        self,
+        dates: List[MeetingDate],
+        meeting_time: time,
+        id_prefix: str,
+        title: str,
+        classification,
     ) -> List[Meeting]:
         meetings = []
         for the_date in dates:
@@ -135,10 +149,7 @@ class AlleLibraryAssocSpider(CityScrapersSpider):
         return meetings
 
     def _date_from_lis(self, lis: List[str]) -> List[MeetingDate]:
-        location =  {
-            "name": "Remote",
-            "address": "Remote"
-        }
+        location = {"name": "Remote", "address": "Remote"}
         dates = []
         for li in lis:
             log.info(repr(li))
