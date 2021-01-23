@@ -125,9 +125,7 @@ def test_make_meetings():
             notes="This meeting has been canceled",
         ),
         MeetingDate(
-            the_date=date(2021, 1, 6),
-            the_place={"key": "val"},
-            notes=" - CANCELED -",
+            the_date=date(2021, 1, 6), the_place={"key": "val"}, notes=" - CANCELED -",
         ),
     ]
 
@@ -187,9 +185,7 @@ def test_date_from_lis():
         jan_27, "note - other - note", "Monday, January 27 note - other - note"
     )
     compare_singles(
-        jan_27,
-        "note - other - note",
-        "Monday, January 27 - note - other - note",
+        jan_27, "note - other - note", "Monday, January 27 - note - other - note",
     )
 
     # Test out different spaces

@@ -47,9 +47,7 @@ class PittVirtualPlanningCommissionSpider(CityScrapersSpider):
     def _parse_title(self) -> str:
         return f"{self.agency} Meeting"
 
-    def _parse_classification(
-        self,
-    ) -> str:
+    def _parse_classification(self,) -> str:
         return COMMISSION
 
     def _parse_start(self, response, index) -> datetime:
