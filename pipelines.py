@@ -38,8 +38,7 @@ class FileSystemDiffPipeline(DiffPipeline):
         self.index = utils.build_spider_index(self.folder)
 
     def load_previous_results(self) -> List[Mapping]:
-        """Walk the local directory, returning the latest result for each spider.
-        """
+        """Walk the local directory, returning the latest result for each spider."""
         tz = timezone(self.spider.timezone)
 
         # Since the file structure is Year/Month/Day/Time/<spider>.json, sorting

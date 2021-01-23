@@ -8,7 +8,7 @@ from city_scrapers_core.spiders import CityScrapersSpider
 
 class PaLiquorboardSpider(CityScrapersSpider):
     """Spider is a class that scapy provides to us,
-        this spider will inherit properties from the base spider class
+    this spider will inherit properties from the base spider class
     """
 
     name = "pa_liquorboard"  # How we refer to the spider when we want to run it

@@ -11,7 +11,8 @@ root = "https://www.alleghenycounty.us/"
 path = root + "economic-development/authorities/meetings-reports/aim/meetings.aspx"
 
 test_response = file_response(
-    join(dirname(__file__), "files", "alle_improvements.html"), url=path,
+    join(dirname(__file__), "files", "alle_improvements.html"),
+    url=path,
 )
 spider = AlleImprovementsSpider()
 

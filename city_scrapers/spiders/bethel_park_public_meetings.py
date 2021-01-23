@@ -56,7 +56,7 @@ class BethelParkSpider(CityScrapersSpider):
         return "\n".join(stripped_lines)
 
     def parse(self, response):
-        """ Convert the website reponse into Meeting objects
+        """Convert the website reponse into Meeting objects
 
         The Bethel Park website allows you to download their calendar in the icalendar format.
         This function parses the icalendar file and converts each event into a Meeting.

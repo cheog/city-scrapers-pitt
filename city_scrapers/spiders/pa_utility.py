@@ -52,7 +52,9 @@ class PaUtilitySpider(CityScrapersSpider):
         return start_time
 
     def _parse_time_notes(self, row, response) -> str:
-        time_notes: str = f"Please double-check {self.base_url} to confirm the start time."
+        time_notes: str = (
+            f"Please double-check {self.base_url} to confirm the start time."
+        )
         event_specific_notes: str = row.xpath("td[3]//p//text()").extract_first()
         if event_specific_notes:
             time_notes = f"{time_notes}\n{event_specific_notes}"
