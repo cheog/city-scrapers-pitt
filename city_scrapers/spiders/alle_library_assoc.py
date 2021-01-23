@@ -1,6 +1,5 @@
 import re
 from datetime import datetime, time, date
-from dataclasses import dataclass
 from typing import Optional, List, Dict, Union
 
 from scrapy.http import HtmlResponse
@@ -23,28 +22,50 @@ from logging import Logger
 log: Logger = logging.getLogger("alle_library_assoc")
 
 
-@dataclass
 class MeetingTimes:
     board: time
     general: time
     advisory: time
     lac: time
 
+    def __init__(self, board: time, general: time, advisory: time, lac: time):
+        self.board = board
+        self.general = general
+        self.advisory = advisory
+        self.lac = lac
 
-@dataclass
+
 class MeetingDate:
     the_date: date
     the_place: Dict[str, str]
     notes: Optional[str]
 
+    def __init__(self, the_date: date, the_place: Dict[str, str], notes: str = None):
+        self.the_date = the_date
+        self.the_place = the_place
+        self.notes = notes
 
-@dataclass
+
 class AllGenericInfo:
     the_date: datetime
     location: Dict[str, str]
     status: Union[CANCELLED, CONFIRMED, PASSED]
     notes: Optional[str]
     source: str
+
+    def __init__(
+        self,
+        the_date: datetime,
+        location: Dict[str, str],
+        status: Union[CANCELLED, CONFIRMED, PASSED],
+        source: str,
+        notes: str = None,
+    ):
+        self.the_date = the_date
+        self.location = location
+        self.status = status
+        self.notes = notes
+        self.source = source
 
 
 class PageChangedException(RuntimeError):
